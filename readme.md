@@ -45,22 +45,15 @@ git clone https://github.com/yourusername/weather-app.git
 
 2. Open the project folder.
 
-3. Replace the API key in `script.js`:
+3. Create a file called `config.js` and add:
 
-```javascript
-const apiKey = "YOUR_OPENWEATHER_API_KEY";
-```
+export const apiKey = "YOUR_OPENWEATHER_API_KEY";
 
 4. Open `index.html` in your browser.
 
 ---
 
 ## 🌐 Live Demo
-
-(Add your deployed link here)
-
-Example:
-
 ```
 https://mausam-jankari-app.netlify.app/
 ```
