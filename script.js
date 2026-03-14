@@ -1,4 +1,5 @@
-const apiKey = "YOUR_OPENWEATHER_API_KEY";
+import { apiKey } from "./config.js";
+// const apiKey = "YOUR_OPENWEATHER_API_KEY";
 const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
 let currentUnit = "metric";
