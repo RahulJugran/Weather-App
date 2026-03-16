@@ -21,6 +21,7 @@ const humidityEl = document.querySelector("#humidity");
 const windEl = document.querySelector("#wind");
 const updatedAtEl = document.querySelector("#updatedAt");
 const unitToggle = document.querySelector("#unitToggle");
+const forecastContainer = document.querySelector("#forecastContainer");
 
 searchBtn.disabled = true;
 
@@ -45,6 +46,7 @@ function resetUI() {
   humidityEl.textContent = "";
   windEl.textContent = "";
   updatedAtEl.textContent = "";
+  forecastContainer.innerHTML = "";
 }
 
 function showError(message) {
@@ -70,6 +72,33 @@ function updateWeatherUI(data) {
   iconEl.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
 
   setBackground(data.weather[0].main);
+}
+
+function updateForecastUI(data) {
+  forecastContainer.innerHTML = "";
+
+  const dailyData = data.list.filter(item =>
+    item.dt_txt.includes("12:00:00")
+  );
+
+  dailyData.slice(0,5).forEach(day => {
+
+    const date = new Date(day.dt_txt);
+    const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+
+    const icon = day.weather[0].icon;
+    const temp = Math.round(day.main.temp);
+
+    const card = `
+      <div class="forecast-day">
+        <p>${dayName}</p>
+        <img src="https://openweathermap.org/img/wn/${icon}.png">
+        <p>${temp}°</p>
+      </div>
+    `;
+
+    forecastContainer.innerHTML += card;
+  });
 }
 
 function setBackground(condition) {
@@ -139,6 +168,7 @@ async function fetchWeather(queryParams) {
     }
 
     updateWeatherUI(data);
+    fetchForecast(queryParams);
   } catch (err) {
     if (err.name === "AbortError") return;
 
@@ -146,6 +176,19 @@ async function fetchWeather(queryParams) {
     errorEl.textContent = "Unable to fetch weather data";
   } finally {
     setLoading(false);
+  }
+}
+
+async function fetchForecast(queryParams) {
+  try {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?${queryParams}&appid=${apiKey}&units=${currentUnit}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    updateForecastUI(data);
+  } catch (error) {
+    console.error("Forecast fetch failed");
   }
 }
 
